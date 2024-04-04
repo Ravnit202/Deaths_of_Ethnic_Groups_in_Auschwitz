@@ -1,9 +1,7 @@
 # Visualization and Interpretation of Holocaust Victims Killed at Auschwitz
 
 ## Overview
-This repository is designed to assist students and researchers in exploring the tragic events that unfolded at the Auschwitz concentration camp during World War II, through statistical data and visualizations. While not all components may be necessary for every project, users are encouraged to adapt the repository to meet their specific needs.
-
-To begin using this repository for your project, simply click the green "Code" button on GitHub, select "Download ZIP," and then extract the folder to your desired location. From there, you can modify the contents to suit your project's requirements.
+This project utilizes Shiny and machine learning models to predict a real-life scenario of the NFL's QB's Passing EPAs for the 2023 season.
 
 ## File Structure
 The repository is organized as follows:
@@ -11,8 +9,10 @@ The repository is organized as follows:
 `data/deportees_and_deaths_auschwitz` contains the data as obtained from Statista.
 `paper` Contains the PDF, Quarto document, and references.
 `figures` Contains screenshots from the Shiny application.
-`llm` Contains llm usage (none).
+`llm` Contains llm usage from OpenAI's ChatGPT-4.
 
 ## LLM Usage
-No LLM was used for this project.
+All LLM usage (ChatGPT-4) is recorded in `llm/llm-usage.txt`. Note that not everything suggested by the LLM was integrated.
+
+
 
