@@ -1,0 +1,91 @@
+---
+title: "Visualization and Interpretation of Holocaust Victims Killed at Auschwitz"
+author: Ravnit Lotay
+thanks: "https://github.com/Ravnit202/Deaths_of_Ethnic_Groups_in_Auschwitz"
+abstract: "This paper utilizes statistical data and visualizations to display the scope of death that occured for various ethnic groups at the Auschwitz concentration camp during World War 2."
+format: pdf
+date: today
+toc: TRUE
+bibliography: references.bib
+nocite: |
+  @R, @readr, @shiny, @pdftools, @ggplot2, @DT, @bouie2022slavery
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(readr)
+library(shiny)
+library(DT)
+library(pdftools)
+```
+
+# Introduction
+
+# Data
+The data is collected from Statista. Specifically, the data housed at this url: https://www.statista.com/statistics/1288821/auschwitz-deportees-deaths-by-background. The reason for using data from this source is simply that Statista provides data in regards to countless topics, and provides ciations as sources.
+
+## Overview of the Dataset
+
+The dataset includes information about the ethnic origins of the victims and the numbers of those who were deported to and died at Auschwitz. However, for this paper, only the deaths will be focused on. The dataset covers various groups, including Jews, Poles, Roma/Sinti, Soviet POWs, and others. This data not only provides a numerical representation of the atrocities that occured at Auschwitz during World War 2, but also provides information about the diverse backgrounds of the victims. 
+
+# Visualization
+
+## Shiny App and Figures
+To visualize the data, the Shiny library will be used, along with screenshots of the results of the application. Below is the R code used to generate the Shiny Application, as well as the outputs.
+```{r}
+data <- read.csv("../data/deportees_and_deaths_auschwitz.csv")
+
+# We only care about Deaths
+data$Deaths <- as.numeric(gsub(",", "", data$Deaths))
+
+ui <- fluidPage(
+  titlePanel("Holocaust Victims at Auschwitz"),
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput("ethnicGroupInput", "Select Ethnic Groups:",
+                         choices = unique(data$Ethnic.Group),
+                         selected = unique(data$Ethnic.Group))
+    ),
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Graph", plotOutput("deathPlot")),
+        tabPanel("Table", DTOutput("filteredTable"))
+      )
+    )
+  )
+)
+
+server <- function(input, output) {
+  filteredData <- reactive({
+    req(input$ethnicGroupInput)
+    data[data$Ethnic.Group %in% input$ethnicGroupInput, ]
+  })
+  
+  output$deathPlot <- renderPlot({
+    ggplot(filteredData(), aes(x=Ethnic.Group, y=Deaths, fill=Ethnic.Group)) +
+      geom_bar(stat="identity") +
+      theme_minimal() +
+      labs(title="Number of Deaths by Ethnic Group", x="Ethnic Group", y="Number of Deaths")
+  })
+  
+  output$filteredTable <- renderDT({
+    datatable(filteredData()[, c("Ethnic.Group", "Deaths")], options = list(pageLength = 5))
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+![AuschwitzGraph](../figures/Graph.png)
+
+![AuschwitzTable](../figures/Table.png)
+
+As seen in the visualizations, the scale of death that occured solely at the Auschwitz concentration camp in World War 2 is immense and included individuals from several ethnic groups.
+
+
+# Dicussion
+
+## Interpreting the Data and Reflecting
+Evidently, the number of Jewish individuals killed at Auschwitz outnumbers the number of all the other ethnic groups combined. This is largely due to the focus against the jewish community during World War 2, however the fact that several otehr ethnic groups were also killed at such large scales shows that the Nazi regime was not solely targetting Jewish individuals, but also those opposing their ideologies.
+
+In relations to the themes discussed by Bouie (2022), the importance of remembering and understanding the impact of the Holocaust are crucial as we look to the future. Additionally, Bouie(2022) stresses the role of data in bridging the past to the present, and the usage of said data. In this case, the data allows individuals born nearly a century later to understand the scale of the crimes that occured at Auschwitz. 
